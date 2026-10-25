@@ -17,9 +17,8 @@ class Dictionary:
     _EMPTY = object()
 
     def __init__(self) -> None:
-        self.length = 0
         self.capacity = 8
-        self.load_factor = int(2 / 3 * self.capacity)
+        self.load_factor = self.capacity * 2 // 3
         self.hash_table = [[self._EMPTY] for _ in range(self.capacity)]
 
     def calculate_hash(self, key: Hashable) -> int:
@@ -28,10 +27,9 @@ class Dictionary:
     def resize_dictionary(self) -> None:
         old_hash_table = self.hash_table
         self.capacity *= 2
-        self.load_factor = int(2 / 3 * self.capacity)
+        self.load_factor = self.capacity * 2 // 3
         self.hash_table = [[self._EMPTY] for _ in range(self.capacity)]
 
-        self.length = 0
         for node_list in old_hash_table:
             for node in node_list:
                 if node is not self._EMPTY:
@@ -51,7 +49,7 @@ class Dictionary:
                 self.hash_table[index][position] = current_node
                 return
         else:
-            if self.length + 1 > self.load_factor:
+            if self.__len__() + 1 > self.load_factor:
                 self.resize_dictionary()
                 index = self.calculate_hash(key)
                 current_node = Node(key, index, value)
@@ -62,7 +60,6 @@ class Dictionary:
                     break
             else:
                 self.hash_table[index].append(current_node)
-            self.length += 1
 
     def __getitem__(self, key: Hashable) -> Any:
         index = self.calculate_hash(key)
@@ -72,4 +69,9 @@ class Dictionary:
         raise KeyError("The key doesn't exist.")
 
     def __len__(self) -> int:
-        return self.length
+        return sum(
+            1 
+            for node_list in self.hash_table
+            for node in node_list
+            if node is not self._EMPTY
+        )

@@ -70,7 +70,7 @@ class Dictionary:
 
     def __len__(self) -> int:
         return sum(
-            1 
+            1
             for node_list in self.hash_table
             for node in node_list
             if node is not self._EMPTY

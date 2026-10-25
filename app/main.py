@@ -41,7 +41,7 @@ class Dictionary:
         try:
             hash(key)
         except TypeError:
-            raise TypeError("The key must be hashable")
+            raise TypeError("The key must be hashable.")
 
         index = self.calculate_hash(key)
         current_node = Node(key, index, value)
@@ -51,7 +51,7 @@ class Dictionary:
                 self.hash_table[index][position] = current_node
                 return
         else:
-            if self.__len__() + 1 > self.load_factor:
+            if self.length + 1 > self.load_factor:
                 self.resize_dictionary()
                 index = self.calculate_hash(key)
                 current_node = Node(key, index, value)

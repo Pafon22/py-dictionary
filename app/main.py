@@ -7,7 +7,6 @@ class Node:
         self.key = key
         self.hash_id = hash_id
         self.value = value
-        self.length = 0
 
     def __eq__(self, other: Hashable) -> bool:
         return self.key == other
@@ -20,11 +19,13 @@ class Dictionary:
         self.capacity = 8
         self.load_factor = self.capacity * 2 // 3
         self.hash_table = [[self._EMPTY] for _ in range(self.capacity)]
+        self.length = 0
 
     def calculate_hash(self, key: Hashable) -> int:
         return hash(key) % self.capacity
 
     def resize_dictionary(self) -> None:
+        self.length = 0
         old_hash_table = self.hash_table
         self.capacity *= 2
         self.load_factor = self.capacity * 2 // 3
@@ -60,6 +61,7 @@ class Dictionary:
                     break
             else:
                 self.hash_table[index].append(current_node)
+            self.length += 1
 
     def __getitem__(self, key: Hashable) -> Any:
         index = self.calculate_hash(key)
@@ -69,9 +71,4 @@ class Dictionary:
         raise KeyError("The key doesn't exist.")
 
     def __len__(self) -> int:
-        return sum(
-            1
-            for node_list in self.hash_table
-            for node in node_list
-            if node is not self._EMPTY
-        )
+        return self.length
